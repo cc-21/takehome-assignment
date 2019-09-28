@@ -1,8 +1,9 @@
 <template>
   <div>
     <!-- PART 1: Pass in a "complete" prop here -->
-    <Instructions />
+    <Instructions complete="true" />
     <!-- PART 4: Modify the Show component to accept all of these props -->
+    <!-- PART 4: the Show component is modified in Show.vue -->
     <Show
       v-for="show in shows"
       :key="show.id"
