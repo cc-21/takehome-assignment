@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response,json
 import mockdb.mockdb_interface as db
 
 app = Flask(__name__)
@@ -64,6 +64,41 @@ def delete_show(id):
 
 
 # TODO: Implement the rest of the API here!
+#PART 2
+@app.route("/shows/<id>", methods=['GET'])
+def get_the_id(id):
+    if db.getById('shows', int(id)) is None:
+        return create_response(status=404, message="No show with this id exists")
+    return create_response(db.getById('shows', int(id)))
+
+#PART 3
+@app.route("/shows", methods=['POST'])
+def create_show():
+    data = request.data
+    dataDict = json.loads(data)
+    
+    if dataDict.get('name') is None:
+        return create_response(status=422, message="Please provide name")
+    if dataDict.get('episodes_seen') is None:
+        return create_response(status=422, message="Please provide the number of episodes seen")
+
+    return create_response(db.create('shows',dataDict), status=201)
+
+#PART 4
+@app.route("/shows/<id>", methods = ['PUT'])
+def update_show(id):
+
+    req_data = request.get_data()
+    data = json.loads(req_data)
+    
+    update_data = {}
+
+    if 'name' in data:
+        update_data['name'] = data['name']
+    if 'episodes_seen' in data:
+        update_data['episodes_seen'] = data['episodes_seen']
+    
+    return create_response(db.updateById('shows', int (id), update_data))
 
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
